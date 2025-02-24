@@ -10,8 +10,18 @@ class CreateTask extends CreateRecord
 {
     protected static string $resource = TaskResource::class;
 
+    public function getTitle():string{
+
+        return __('Create Task');
+    }
+
+   
 
 
+    public static function shouldRegisterNavigation(array $parameters = []): bool
+    {
+        return true;
+    }
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {

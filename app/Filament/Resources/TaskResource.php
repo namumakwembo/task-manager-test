@@ -19,12 +19,35 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 class TaskResource extends Resource
 {
     protected static ?string $model = Task::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $navigationGroup = 'Tasks';
+
+
+    public function getTitle():string{
+
+        return __('Tasks');
+    }
+
+    public function getHeading(): string
+    {
+        return __('Tasks');
+    }
+    public static function getNavigationLabel(): string
+    {
+        return __('Tasks');
+    }
+    public function getSubheading(): ?string
+    {
+        return __('Tasks');
+    }
+    
 
     public static function form(Form $form): Form
     {
@@ -35,8 +58,8 @@ class TaskResource extends Resource
             ->schema([
 
                 Forms\Components\Section::make(__('Details'))->translateLabel()->schema([
-                    TextInput::make('name')->string()->maxLength(100)->required()->autofocus(),
-                    MarkdownEditor::make('description')->string()->maxLength(500)->nullable()
+                    TextInput::make('name')->translateLabel()->string()->maxLength(100)->required()->autofocus(),
+                    MarkdownEditor::make('description')->translateLabel()->string()->maxLength(500)->nullable()
                     ->disableToolbarButtons([
                         'attachFiles',
                         'strike',
@@ -51,13 +74,13 @@ class TaskResource extends Resource
             ->schema([
 
                 //Meta
-                Forms\Components\Section::make("Meta")
+                Forms\Components\Section::make("Meta")->translateLabel()
                     ->schema([
                         TagsInput::make('tags')->distinct()->label(__("Tags"))->placeholder(__("Add Tags")),
-                         \Filament\Forms\Components\Select::make('status')
+                         \Filament\Forms\Components\Select::make('status')->label(__("Status"))
                             ->options([
-                                'Completed' => 'completed',
-                                'pending' => 'pending',
+                                'completed' => __('Completed'),
+                                'pending' => __('Pending'),
                             ])
                     ]),
 
@@ -74,9 +97,18 @@ class TaskResource extends Resource
                 ->searchable(),
             Tables\Columns\TextColumn::make('description')->translateLabel()->markdown()->formatStateUsing(fn(string $state) =>  str()->limit($state, 10) )
                 ->searchable(),
-                TextColumn::make('tags')->translateLabel()->bulleted()->listWithLineBreaks()->limitList(2),
+                TextColumn::make('tags')->translateLabel()->bulleted()->listWithLineBreaks()->formatStateUsing(fn(string $state) =>  str()->limit($state, 20) )->limitList(2),
+                ToggleColumn::make('status')
+                ->label("Completed")
+                ->getStateUsing(fn ($record) => $record->status === 'completed') // Convert stored string to boolean
+                ->updateStateUsing(function ($record, $state) {
+                    $record->status = $state ? 'completed' : 'pending'; // Convert back to string
+                    $record->save();
+                })
+                ->translateLabel(),
+            
 
-                TextColumn::make('created_at')->since()->dateTimeTooltip()
+                TextColumn::make('created_at')->translateLabel()->since()->dateTimeTooltip()
       
         ])
         ->filters([
@@ -92,7 +124,7 @@ class TaskResource extends Resource
             // ]),
         ])
         ->emptyStateActions([
-            Tables\Actions\CreateAction::make(),
+            Tables\Actions\CreateAction::make()->label('Create Task'),
         ]);
 
     }
