@@ -16,6 +16,7 @@
 - `touch database/database.sqlite`  <!-- Creates the SQLite database file -->
 - `php artisan migrate --seed`
 - `php artisan key:generate`
+- `php artisan optimize`
 - `npm install && composer dev`
 - Visit page at [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 

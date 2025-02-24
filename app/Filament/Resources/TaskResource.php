@@ -76,8 +76,9 @@ class TaskResource extends Resource
                 //Meta
                 Forms\Components\Section::make("Meta")->translateLabel()
                     ->schema([
-                        TagsInput::make('tags')->distinct()->label(__("Tags"))->placeholder(__("Add Tags")),
+                        TagsInput::make('tags')->distinct()->label(__("Tags"))->placeholder(__("Add Tags"))->nullable(),
                          \Filament\Forms\Components\Select::make('status')->label(__("Status"))
+                         ->required()
                             ->options([
                                 'completed' => __('Completed'),
                                 'pending' => __('Pending'),
