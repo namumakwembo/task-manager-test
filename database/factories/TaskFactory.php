@@ -21,6 +21,7 @@ class TaskFactory extends Factory
         return [
             'user_id' => User::factory(), // Creates a user if not provided
             'name' => $this->faker->sentence(3),
+            'tags' => implode(',', $this->faker->words(3)),
             'description' => $this->faker->paragraph,
             'status' => 'pending'
         ];

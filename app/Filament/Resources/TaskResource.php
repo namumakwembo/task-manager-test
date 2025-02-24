@@ -36,13 +36,24 @@ class TaskResource extends Resource
 
                 Forms\Components\Section::make(__('Details'))->translateLabel()->schema([
                     TextInput::make('name')->string()->maxLength(100)->required()->autofocus(),
-                    MarkdownEditor::make('description')->string()->maxLength(500)->nullable()->columnSpan(2),
-                ])->columns(2),
+                    MarkdownEditor::make('description')->string()->maxLength(500)->nullable()
+                    ->disableToolbarButtons([
+                        'attachFiles',
+                        'strike',
+                    ])
+                    ->columnSpan(2),
+                ]),
+
+
+            ]),
+
+            Forms\Components\Group::make()
+            ->schema([
 
                 //Meta
                 Forms\Components\Section::make("Meta")
                     ->schema([
-                        TagsInput::make('tags')->distinct()->label("Tags")->placeholder(__("Add Tags")),
+                        TagsInput::make('tags')->distinct()->label(__("Tags"))->placeholder(__("Add Tags")),
                          \Filament\Forms\Components\Select::make('status')
                             ->options([
                                 'Completed' => 'completed',
@@ -50,8 +61,8 @@ class TaskResource extends Resource
                             ])
                     ]),
 
+                ]),
 
-            ])->columnSpan(2),
         ]);
     }
 
@@ -59,12 +70,12 @@ class TaskResource extends Resource
     {
         return $table
         ->columns([
-            Tables\Columns\TextColumn::make('name')
-                ->description(fn (Task $record): string => $record->description)
+            Tables\Columns\TextColumn::make('name')->translateLabel()
                 ->searchable(),
-            Tables\Columns\TextColumn::make('description')
-                ->description(fn (Task $record): string => $record->description)
+            Tables\Columns\TextColumn::make('description')->translateLabel()->markdown()->formatStateUsing(fn(string $state) =>  str()->limit($state, 10) )
                 ->searchable(),
+                TextColumn::make('tags')->translateLabel()->bulleted()->listWithLineBreaks()->limitList(2),
+
                 TextColumn::make('created_at')->since()->dateTimeTooltip()
       
         ])
@@ -73,6 +84,7 @@ class TaskResource extends Resource
         ])
         ->actions([
             Tables\Actions\EditAction::make(),
+            Tables\Actions\ViewAction::make(),
         ])
         ->bulkActions([
             // Tables\Actions\BulkActionGroup::make([
@@ -91,6 +103,11 @@ class TaskResource extends Resource
             //
         ];
     }
+
+    public static function getEloquentQuery(): Builder
+{
+    return parent::getEloquentQuery()->where('user_id', auth()->id());
+}
 
     public static function getPages(): array
     {
