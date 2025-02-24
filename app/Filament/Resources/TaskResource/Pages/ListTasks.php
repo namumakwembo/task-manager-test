@@ -17,10 +17,20 @@ class ListTasks extends ListRecords
     {
         return true;
     }
+
+    public function getTitle():string{
+
+        return __('Tasks');
+    }
+
+    public function getHeading(): string
+    {
+        return __('Tasks');
+    }
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label(__('Create Task')),
         ];
     }
 }
