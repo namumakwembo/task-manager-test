@@ -9,13 +9,15 @@ use Illuminate\Notifications\Notifiable;
 
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Laravel\Sanctum\HasApiTokens;
 
+Laravel\Sanctum\HasApiTokens;
  
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
-
+    use HasApiTokens;
     /**
      * The attributes that are mass assignable.
      *
