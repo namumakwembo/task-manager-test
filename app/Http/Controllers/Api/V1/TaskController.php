@@ -11,12 +11,14 @@ use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
+
+    const INDEX_DEFAULT_PAGINATION=10;
    /**
      * Get all tasks for the authenticated user.
      */
     public function index()
     {
-        $tasks = Auth::user()->tasks()->latest()->get();
+        $tasks = Auth::user()->tasks()->latest()->paginate(self::INDEX_DEFAULT_PAGINATION);
         return TaskResource::collection($tasks);
     }
 
