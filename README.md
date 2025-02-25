@@ -18,6 +18,7 @@
 - `php artisan key:generate`
 - `php artisan optimize`
 - `npm install && composer dev`
+- `php artisn test`
 - Visit page at [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 Login:
