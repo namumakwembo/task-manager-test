@@ -11,7 +11,6 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Laravel\Sanctum\HasApiTokens;
 
-Laravel\Sanctum\HasApiTokens;
  
 class User extends Authenticatable implements FilamentUser
 {
