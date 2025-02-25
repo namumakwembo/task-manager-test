@@ -8,6 +8,7 @@ use App\Http\Resources\Api\V1\TaskResource;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
@@ -37,7 +38,8 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        $this->authorize('view', $task);
+        Gate::authorize('view', $task);
+
 
         return new TaskResource($task);
     }
@@ -47,7 +49,8 @@ class TaskController extends Controller
      */
     public function update(TaskRequest $request, Task $task)
     {
-        $this->authorize('update', $task);
+
+        Gate::authorize('update', $task);
 
         $task->update($request->validated());
 
@@ -59,10 +62,10 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        $this->authorize('delete', $task);
+        Gate::authorize('delete', $task);
 
         $task->delete();
 
-        return response()->json(['message' => 'Task deleted successfully.']);
+        return response()->json(['message' => 'Task deleted successfully.'],204);
     }
 }
