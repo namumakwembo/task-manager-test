@@ -3,63 +3,64 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TaskRequest;
+use App\Http\Resources\Api\V1\TaskResource;
+use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
+   /**
+     * Get all tasks for the authenticated user.
      */
     public function index()
     {
-        //
+        $tasks = Auth::user()->tasks()->latest()->get();
+        return TaskResource::collection($tasks);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Store a newly created task.
      */
-    public function create()
+    public function store(TaskRequest $request)
     {
-        //
+        $task = Auth::user()->tasks()->create($request->validated());
+
+        return new TaskResource($task);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display a specific task.
      */
-    public function store(Request $request)
+    public function show(Task $task)
     {
-        //
+        $this->authorize('view', $task);
+
+        return new TaskResource($task);
     }
 
     /**
-     * Display the specified resource.
+     * Update the specified task.
      */
-    public function show(string $id)
+    public function update(TaskRequest $request, Task $task)
     {
-        //
+        $this->authorize('update', $task);
+
+        $task->update($request->validated());
+
+        return new TaskResource($task);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Delete the specified task.
      */
-    public function edit(string $id)
+    public function destroy(Task $task)
     {
-        //
-    }
+        $this->authorize('delete', $task);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        $task->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json(['message' => 'Task deleted successfully.']);
     }
 }
