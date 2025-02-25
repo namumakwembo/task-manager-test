@@ -44,8 +44,20 @@
 
 ---
 
-## **New API Integration**
-As part of the evaluation process, API functionality has been added to the project.
+## **Yeni API Entegrasyonu**  
+Değerlendirme sürecinin bir parçası olarak projeye API işlevselliği eklendi.  
+
+### En son güncellemeleri almak için:  
+1. En son değişiklikleri çekin:  
+   ```sh
+   git pull origin main
+   ```  
+
+2. Yeni API entegrasyonunu test etmek için:  
+   ```sh
+   php artisan test
+   ``` 
+    
 
 ### **API Enhancements**
 1. **Sanctum Authentication**
